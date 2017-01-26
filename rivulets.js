@@ -16,7 +16,7 @@ var grid = [
 function drawTile(x, y) {
     var c = document.getElementById("slope");
     var ctx = c.getContext("2d");
-    //var r = 180 + grid[x][y], g = 130 + grid[x][y], b = 70 + grid[x][y];
+    var r = 180 + grid[x][y], g = 130 + grid[x][y], b = 70 + grid[x][y];
     ctx.fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
     ctx.fillRect((x*tile_size), (y*tile_size), tile_size, tile_size);
 }
