@@ -1,9 +1,18 @@
-// var doTheThing = setInterval(rainDrop, 30)
 //[[50,50,50,50,50],
 // [50,50,50,50,50],
 // [50,50,50,50,50],
 // [50,50,50,50,50],
 // [50,50,50,50,50]]
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function chooseRandFromArray(inArray) {
+    return inArray[getRandomInt(0, inArray.length)];
+}
 
 // It might make more sense to define the number of pixels in a tile 
 // and the number of tiles in a grid and calculate theh screen size from there
@@ -11,7 +20,7 @@
 class Slope {
     constructor(gridSize = 5, 
                 maxResistance = 50, 
-                rainDelta = 1,
+                rainDelta = 10,
                 screenSize = 100,
                 modWest = 0,
                 modSouthwest = 0,
@@ -35,6 +44,11 @@ class Slope {
         
         this.grid = this.makeGrid();
         this.drawBoard();
+        
+        // The current row and current column
+        // initialize to greater than the grid size so it hits the first case in rainDrop
+        this.row = 0;
+        this.col = this.pickStart();
     }
     
     makeGrid() {
@@ -60,45 +74,103 @@ class Slope {
     }
     
     drawBoard() {
-        for (var row = 0; row < this.gridSize; row++) {
-            for (var col = 0; col < this.gridSize; col++) {
-                this.drawTile(row, col);
+        for (var dbRow = 0; dbRow < this.gridSize; dbRow++) {
+            for (var dbCol = 0; dbCol < this.gridSize; dbCol++) {
+                this.drawTile(dbRow, dbCol);
             }
         }
     }
     
     pickStart() {
-        return Math.random(0, self.gridSize);
+        return getRandomInt(0, this.gridSize);
     }
     
-    updateSlope(row, col) {
-        this.grid[row][col] += this.rainDelta;
+    updateSlope() {
+        this.grid[this.row][this.col] += this.rainDelta;
     }
     
-    getNeighbors(row, col) {
-        
+    inRange(row, col) {
+        return ((0 <= row) &&
+                (row < this.gridSize) && 
+                (0 <= col) &&
+                (col < this.gridSize));
+    }
+    
+    coordToStr(row, col) {
+        return row + "," + col;
+    }
+    
+    strToCoord(coordStr) {
+        return coordStr.split(",");
+    }
+    
+    getNeighbors() {
+        var neighbors = new Map();
+        // west
+        var w_row = this.row, w_col = this.col - 1;
+        if (this.inRange(w_row, w_col)) {
+            neighbors.set(this.coordToStr(w_row, w_col), this.grid[w_row][w_col]);
+        }
+        // southwest
+        var sw_row = this.row + 1, sw_col = this.col - 1;
+        if (this.inRange(sw_row, sw_col)) {
+            neighbors.set(this.coordToStr(sw_row, sw_col), this.grid[sw_row][sw_col]);
+        }
+        // south
+        var s_row = this.row + 1, s_col = this.col;
+        if (this.inRange(s_row, s_col)) {
+            neighbors.set(this.coordToStr(s_row, s_col), this.grid[s_row][s_col]);
+        }
+        // southeast
+        var se_row = this.row + 1, se_col = this.col + 1;
+        if (this.inRange(se_row, se_col)) {
+            neighbors.set(this.coordToStr(se_row, se_col), this.grid[se_row][se_col]);
+        }
+        // east
+        var e_row = this.row, e_col = this.col + 1;
+        if (this.inRange(e_row, e_col)) {
+            neighbors.set(this.coordToStr(e_row, e_col), this.grid[e_row][e_col]);
+        }
+        return neighbors;
     }
     
     createSelection(neighbors) {
-        
+        var selectionArray = [];
+        for (var [coord, weight] of neighbors) {
+            for (var i = 0; i < weight; i++) {
+                selectionArray.push(coord);
+            }
+        }
+        return selectionArray;
     }
     
-    pickNext(row, col) {
-        var neighbors = this.getNeighbors(row, col);
-        var selectionArray = this.createSelection(neighbors);
-        return random.choice(selectionArray);
+    pickNext() {
+        if (this.row >= this.gridSize) {
+            this.row = 0;
+            this.col = this.pickStart();
+        }
+        else {
+            var neighbors = this.getNeighbors();
+            var selectionArray = this.createSelection(neighbors);
+            var nextString = chooseRandFromArray(selectionArray);
+            var nextCoord = this.strToCoord(nextString);
+            this.row = parseInt(nextCoord[0]);
+            this.col = parseInt(nextCoord[1]);
+        }
     }
     
     rainDrop() {
-        var row = 0;
-        var col = this.pickStart();
-        
-        while (row < this.gridSize) {
-            this.updateSlope(row, col);
-            this.drawTile(row, col);
-            row, col = this.pickNext(row, col);
-        }
+        this.pickNext();
+        this.updateSlope();
+        this.drawTile(this.row, this.col);
+    }
+    
+    run() {
+        setInterval(this.rainDrop, 3000);
+        //this.rainDrop();
     }
 }
 
 var testSlope = new Slope();
+
+testSlope.run();
