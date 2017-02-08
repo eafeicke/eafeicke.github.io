@@ -27,7 +27,7 @@ class Slope {
                 modSouth = 0,
                 modSoutheast = 0,
                 modEast = 0,
-                beginColor = [180, 130, 70]) {
+                beginColor = [190, 160, 100]) {
         
         this.gridSize = gridSize; // number of rows and columns on the board (board is always square, so rows==cols)
         this.maxResistance = maxResistance;
@@ -164,13 +164,12 @@ class Slope {
         this.updateSlope();
         this.drawTile(this.row, this.col);
     }
-    
-    run() {
-        setInterval(this.rainDrop, 3000);
-        //this.rainDrop();
-    }
 }
 
 var testSlope = new Slope();
 
-testSlope.run();
+setInterval(function(){testSlope.run();}, 2000);
+
+// TODO: Start drop at top row
+// TODO: Add hidden bottom row to allow drop to finish
+// TODO: Make board bigger, tiles smaller
