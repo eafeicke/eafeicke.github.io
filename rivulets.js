@@ -47,13 +47,13 @@ class Slope {
         
         // The current row and current column
         // initialize to greater than the grid size so it hits the first case in rainDrop
-        this.row = 0;
+        this.row = this.gridSize + 1;
         this.col = this.pickStart();
     }
     
     makeGrid() {
         var grid = [];
-        for (var i = 0; i < this.gridSize; i++) {
+        for (var i = 0; i < this.gridSize + 1; i++) {
             var line = [];
             for (var j = 0; j < this.gridSize; j++) {
                 line.push(this.maxResistance);
@@ -91,7 +91,7 @@ class Slope {
     
     inRange(row, col) {
         return ((0 <= row) &&
-                (row < this.gridSize) && 
+                (row < this.gridSize + 1) && 
                 (0 <= col) &&
                 (col < this.gridSize));
     }
@@ -168,8 +168,10 @@ class Slope {
 
 var testSlope = new Slope();
 
-setInterval(function(){testSlope.rainDrop();}, 2000);
+setInterval(function(){testSlope.rainDrop();}, 500);
 
 // TODO: Start drop at top row
 // TODO: Add hidden bottom row to allow drop to finish
 // TODO: Make board bigger, tiles smaller
+
+
