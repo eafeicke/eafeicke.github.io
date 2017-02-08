@@ -168,7 +168,7 @@ class Slope {
 
 var testSlope = new Slope();
 
-setInterval(function(){testSlope.run();}, 2000);
+setInterval(function(){testSlope.rainDrop();}, 2000);
 
 // TODO: Start drop at top row
 // TODO: Add hidden bottom row to allow drop to finish
