@@ -91,7 +91,7 @@ class Slope {
     
     inRange(row, col) {
         return ((0 <= row) &&
-                (row < this.gridSize + 1) && 
+                (row < this.gridSize) && 
                 (0 <= col) &&
                 (col < this.gridSize));
     }
