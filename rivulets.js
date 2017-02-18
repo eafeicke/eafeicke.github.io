@@ -18,15 +18,15 @@ function chooseRandFromArray(inArray) {
 // and the number of tiles in a grid and calculate theh screen size from there
 
 class Slope {
-    constructor(gridSize = 5, 
+    constructor(gridSize = 50, 
                 maxResistance = 50, 
                 rainDelta = 10,
-                screenSize = 100,
-                modWest = 0,
-                modSouthwest = 0,
-                modSouth = 0,
-                modSoutheast = 0,
-                modEast = 0,
+                screenSize = 500,
+                modWest = 1,
+                modSouthwest = 3,
+                modSouth = 6,
+                modSoutheast = 3,
+                modEast = 1,
                 beginColor = [190, 160, 100]) {
         
         this.gridSize = gridSize; // number of rows and columns on the board (board is always square, so rows==cols)
@@ -114,17 +114,17 @@ class Slope {
         // southwest
         var sw_row = this.row + 1, sw_col = this.col - 1;
         if (this.inRange(sw_row, sw_col)) {
-            neighbors.set(this.coordToStr(sw_row, sw_col), this.grid[sw_row][sw_col]);
+            neighbors.set(this.coordToStr(sw_row, sw_col), this.grid[sw_row][sw_col] * this.modSouthwest);
         }
         // south
         var s_row = this.row + 1, s_col = this.col;
         if (this.inRange(s_row, s_col)) {
-            neighbors.set(this.coordToStr(s_row, s_col), this.grid[s_row][s_col]);
+            neighbors.set(this.coordToStr(s_row, s_col), this.grid[s_row][s_col] * this.modSouth);
         }
         // southeast
         var se_row = this.row + 1, se_col = this.col + 1;
         if (this.inRange(se_row, se_col)) {
-            neighbors.set(this.coordToStr(se_row, se_col), this.grid[se_row][se_col]);
+            neighbors.set(this.coordToStr(se_row, se_col), this.grid[se_row][se_col] * this.modSoutheast);
         }
         // east
         var e_row = this.row, e_col = this.col + 1;
@@ -168,7 +168,7 @@ class Slope {
 
 var testSlope = new Slope();
 
-setInterval(function(){testSlope.rainDrop();}, 500);
+setInterval(function(){testSlope.rainDrop();}, 30);
 
 // TODO: Start drop at top row
 // TODO: Add hidden bottom row to allow drop to finish
